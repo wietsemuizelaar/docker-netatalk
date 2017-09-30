@@ -1,21 +1,21 @@
 # Netatalk in a Docker container
 
-An container serving [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_Filing_Protocol) file sharing, Tracker (search/spotlight integration), and mDNS server for service discovery.
+An container serving [Apple Filing Protocol](https://en.wikipedia.org/wiki/Apple_Filing_Protocol) file sharing.
 
 ## I'm in the fast lane! Get me started
 
 To quickly get started with running an [Netatalk] container first you can run the following command:
 
 ```bash
-docker run --detach --publish 548:548 cptactionhank/netatalk:latest
+docker run --detach --publish 548:548 wmuizelaar/netatalk:latest
 ```
 
 **Important:** This does not announce the AFP service on the network; connecting to the server should be performed by Finder's `Go -> Connect Server (CMD+K)` and then typing `afp://[docker_host]`.
 
-Default configuration of [Netatalk] has two share called _Share_ which shares the containers `/media/share` and called _TimeMachine_ which shares the containers `/media/timemachine` mounting point. Host mounting a volume to this path will be the quickest way to start sharing files on your network.
+Default configuration of [Netatalk] has a share and called _TimeMachine_ which shares the containers `/media/timemachine` mounting point. Host mounting a volume to this path will be the quickest way to start sharing files on your network.
 
 ```bash
-docker run --detach --volume [host_path]:/media/share --volume [host_path]:/media/timemachine --publish 548:548 cptactionhank/netatalk:latest
+docker run --detach --volume [host_path]:/media/share --volume [host_path]:/media/timemachine --publish 548:548 wmuizelaar/netatalk:latest
 ```
 
 ## The slower road
@@ -31,7 +31,7 @@ There are two ways of configuring the [Netatalk] which is either by mounting a c
 This is quite a simple way to change the configuration by supplying an additional docker flag when creating the container.
 
 ```bash
-docker run --detach --volume [host_path]:/etc/afp.conf --volume [host_path]:/media/share --volume [host_path]:/media/timemachine --publish 548:548 cptactionhank/netatalk:latest
+docker run --detach --volume [host_path]:/etc/afp.conf --volume [host_path]:/media/share --volume [host_path]:/media/timemachine --publish 548:548 wmuizelaar/netatalk:latest
 ```
 
 #### Container edited configuration
@@ -59,7 +59,7 @@ docker run --detach \
     --env AFP_PASSWORD=secret \
     --env AFP_UID=$(id -u) \
     --env AFP_GID=$(id -g) \
-    cptactionhank/netatalk:latest
+    wmuizelaar/netatalk:latest
 ```
 
 This replaces all occurrences of `%USER%` in `afp.conf` with `AFP_USER`
@@ -72,16 +72,6 @@ log file = /var/log/netatalk.log
 path = /media/share
 valid users = %USER%
 ```
-
-### Service discovery
-
-This image includes an avahi daemon which is off by default. Enable by setting the environment variable `AVAHI=1` with `docker run -e AVAHI=1 ...`
-
-Service discovery works only when the [Avahi] daemon is on the same network as your users which is why you need to supply `--net=host` flag to Docker when creating the container, but do consider that `--net=host` is considered a security threat. Alternatively you can install and setup an mDNS server on the host and have this describing the AFP service for your container.
-
-## Acknowledgments
-
-Thanks to @rrva for his work updating this image to [Netatalk] version 3.1.8 and slimming down this image for everyone to enjoy.
 
 ## Contributions
 
@@ -96,4 +86,3 @@ This work is made possible with the great services from [Docker] and [GitHub].
 [Netatalk]: http://netatalk.sourceforge.net/
 [Docker]: https://www.docker.com/
 [GitHub]: https://www.github.com/
-[Avahi]: http://www.avahi.org/

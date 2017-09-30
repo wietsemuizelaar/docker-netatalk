@@ -14,12 +14,6 @@ if [ ! -z "${AFP_USER}" ]; then
     fi
 fi
 
-if [ ! -d /media/share ]; then
-  mkdir /media/share
-  echo "use -v /my/dir/to/share:/media/share" > readme.txt
-fi
-chown "${AFP_USER}" /media/share
-
 if [ ! -d /media/timemachine ]; then
   mkdir /media/timemachine
   echo "use -v /my/dir/to/timemachine:/media/timemachine" > readme.txt
@@ -32,14 +26,4 @@ echo ---begin-afp.conf--
 cat /etc/afp.conf
 echo ---end---afp.conf--
 
-mkdir -p /var/run/dbus
-rm -f /var/run/dbus/pid
-dbus-daemon --system
-if [ "${AVAHI}" == "1" ]; then
-    sed -i '/rlimit-nproc/d' /etc/avahi/avahi-daemon.conf
-    avahi-daemon -D
-else
-    echo "Skipping avahi daemon, enable with env variable AVAHI=1"
-fi;
-
-exec netatalk -d
+exec /usr/sbin/netatalk -d
